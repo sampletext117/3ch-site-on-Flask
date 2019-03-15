@@ -27,9 +27,12 @@ def login():
         if (exists[0]):
             session['username'] = user_name
             session['user_id'] = exists[1]
-        return redirect("/index")
-    print(session)
+        return redirect("/start_page")
     return render_template('login.html', title='Авторизация', form=form)
+
+@app.route('/start_page', methods=['GET', 'POST'])
+def start_page():
+    return render_template('start_page.html', title='Три.ч - Свободное общение.')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

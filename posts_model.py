@@ -5,7 +5,7 @@ class PostModel:
     def init_table(self):
         cursor = self.connection.cursor()
         cursor.execute('''CREATE TABLE IF NOT EXISTS posts 
-                            (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                            (id INTEGER PRIMARY KEY AUTOINCREMENT,
                              title VARCHAR(100),
                              content VARCHAR(1000),
                              user VARCHAR(100),
@@ -18,7 +18,7 @@ class PostModel:
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO posts 
                           (title, content, user, user_id) 
-                          VALUES (?,?,?,?)''', (title, content, user, str(user_id)))
+                          VALUES (?,?,?,?,?)''', (title, content, user, str(user_id)))
         cursor.close()
         self.connection.commit()
         
