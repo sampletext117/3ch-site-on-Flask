@@ -43,8 +43,8 @@ def register():
         return redirect("/login")
     return render_template('register.html', title= 'Регистрация', form=form)
 
-@app.route('/add_post', methods=['GET', 'POST'])
-def add_post():
+@app.route('/add_post/<thread>', methods=['GET', 'POST'])
+def add_post(thread):
     if 'username' not in session:
         return redirect('/login')
     form = AddPostForm()
@@ -53,17 +53,18 @@ def add_post():
         content = form.content.data
         u_name = session['username']
         pm = PostModel(db1.get_connection())
-        pm.insert(title, content, u_name, session['user_id'])
+        pm.insert(thread, title, content, u_name, session['user_id'])
         return redirect("/index")
     return render_template('add_post.html', title='Создание поста', form=form, username=session['username'])
 
 
-@app.route('/delete_post/<int:post_id>', methods=['GET'])
-def delete_post(post_id):
+@app.route('/delete_post/<thread>/<int:post_id>', methods=['GET'])
+def delete_post(thread, post_id):
+    print(thread)
     if 'username' not in session:
         return redirect('/login')
     pm = PostModel(db1.get_connection())
-    pm.delete(post_id)
+    pm.delete(thread, post_id)
     return redirect("/index")
 
 
@@ -71,7 +72,7 @@ def delete_post(post_id):
 def index():
     if 'username' not in session:
         return redirect('/login')
-    posts = PostModel(db1.get_connection()).get_all()
+    posts = PostModel(db1.get_connection()).get_all('thread1')
     return render_template('index.html', username=session['username'], posts=posts)
 
 

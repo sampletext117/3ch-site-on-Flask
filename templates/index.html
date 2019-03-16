@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <a href="/add_post">Добавить пост</a>
+    <a href="/add_post/thread1">Добавить пост</a>
     {% for item in posts %}
         <div class="alert alert-dark" role="alert">
             <h2>{{item[1]}}</h2>
             <div>{{item[2]}}</div>
-             <a href="/delete_news/{{item[0]}}">Удалить пост</a>
+             <a href="/delete_post/thread1/{{item[0]}}">Удалить пост</a>
         </div>
     {% endfor %}
 {% endblock %}
