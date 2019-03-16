@@ -8,15 +8,16 @@ class UserModel:
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(50),
                              password_hash VARCHAR(128)
+                             user_number VARCHAR(8)
                              )''')
         cursor.close()
         self.connection.commit()
         
-    def insert(self, user_name, password_hash):
+    def insert(self, user_name, password_hash, user_number):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO users 
-                          (user_name, password_hash) 
-                          VALUES (?,?)''', (user_name, password_hash))
+                          (user_name, password_hash, user_number) 
+                          VALUES (?,?,?)''', (user_name, password_hash, user_number))
         cursor.close()
         self.connection.commit()
         

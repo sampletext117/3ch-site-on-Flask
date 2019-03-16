@@ -6,6 +6,7 @@ from db import DB
 from user_model import UserModel
 from posts_model import PostModel
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
@@ -30,9 +31,11 @@ def login():
         return redirect("/start_page")
     return render_template('login.html', title='Авторизация', form=form)
 
+
 @app.route('/start_page', methods=['GET', 'POST'])
 def start_page():
     return render_template('start_page.html', title='Три.ч - Свободное общение.')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -43,10 +46,12 @@ def register():
         return redirect("/login")
     return render_template('register.html', title= 'Регистрация', form=form)
 
+
 @app.route('/add_post/<thread>', methods=['GET', 'POST'])
 def add_post(thread):
     if 'username' not in session:
         return redirect('/login')
+
     form = AddPostForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -54,7 +59,7 @@ def add_post(thread):
         u_name = session['username']
         pm = PostModel(db1.get_connection())
         pm.insert(thread, title, content, u_name, session['user_id'])
-        return redirect("/index")
+        return redirect("/" + thread)
     return render_template('add_post.html', title='Создание поста', form=form, username=session['username'])
 
 
@@ -65,15 +70,43 @@ def delete_post(thread, post_id):
         return redirect('/login')
     pm = PostModel(db1.get_connection())
     pm.delete(thread, post_id)
-    return redirect("/index")
+    return redirect("/thread1")
 
 
-@app.route('/index', methods=['GET', 'POST'])
-def index():
-    if 'username' not in session:
-        return redirect('/login')
+@app.route('/thread1', methods=['GET', 'POST'])
+def thread1():
     posts = PostModel(db1.get_connection()).get_all('thread1')
-    return render_template('index.html', username=session['username'], posts=posts)
+    return render_template('thread1.html', username=session['username'], posts=posts)
+
+
+@app.route('/thread2', methods=['GET', 'POST'])
+def thread2():
+    posts = PostModel(db1.get_connection()).get_all('thread2')
+    return render_template('thread2.html', username=session['username'], posts=posts)
+
+
+@app.route('/thread3', methods=['GET', 'POST'])
+def thread3():
+    posts = PostModel(db1.get_connection()).get_all('thread3')
+    return render_template('thread3.html', username=session['username'], posts=posts)
+
+
+@app.route('/thread4', methods=['GET', 'POST'])
+def thread4():
+    posts = PostModel(db1.get_connection()).get_all('thread4')
+    return render_template('thread4.html', username=session['username'], posts=posts)
+
+
+@app.route('/thread5', methods=['GET', 'POST'])
+def thread5():
+    posts = PostModel(db1.get_connection()).get_all('thread5')
+    return render_template('thread5.html', username=session['username'], posts=posts)
+
+
+@app.route('/thread6', methods=['GET', 'POST'])
+def thread6():
+    posts = PostModel(db1.get_connection()).get_all('thread6')
+    return render_template('thread6.html', username=session['username'], posts=posts)
 
 
 @app.route('/error', methods=['GET', 'POST'])
@@ -86,6 +119,7 @@ def logout():
     session.pop('username',0)
     session.pop('user_id',0)
     return redirect('/login')
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1', debug=True)
