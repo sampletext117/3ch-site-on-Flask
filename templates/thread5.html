@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1><font size="6" face="Times New Roman">Гуманитарии</font></h1>
+    <h1><font size="6" face="Times New Roman">Конфа гуманитариев</font></h1>
 	<a href="/add_post/thread5">Написать пост</a>
     {% for item in posts %}
         <div class="alert alert-dark" role="alert">
-            <h2>{{item[1]}}</h2>
+            <h2>{{item[1]}}; от пользователя {{ item[3] }}</h2>
             <div>{{item[2]}}<br>
 			<img src={{item[6]}} alt=></div>
              <a href="/delete_post/thread5/{{item[0]}}">Удалить пост</a>
