@@ -7,17 +7,16 @@ class UserModel:
         cursor.execute('''CREATE TABLE IF NOT EXISTS users 
                             (id INTEGER PRIMARY KEY AUTOINCREMENT, 
                              user_name VARCHAR(50),
-                             password_hash VARCHAR(128)
                              user_number VARCHAR(8)
                              )''')
         cursor.close()
         self.connection.commit()
         
-    def insert(self, user_name, password_hash, user_number):
+    def insert(self, user_name, password_hash):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO users 
-                          (user_name, password_hash, user_number) 
-                          VALUES (?,?,?)''', (user_name, password_hash, user_number))
+                          (user_name, password_hash) 
+                          VALUES (?,?)''', (user_name, password_hash))
         cursor.close()
         self.connection.commit()
         

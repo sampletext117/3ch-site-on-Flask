@@ -10,16 +10,17 @@ class PostModel:
                              content VARCHAR(1000),
                              user VARCHAR(100),
                              thread_id VARCHAR(100),
-                             user_id INTEGER
+                             user_id INTEGER,
+                             file_path VARCHAR(100)
                              )''')
         cursor.close()
         self.connection.commit()
         
-    def insert(self, thread_id, title, content, user, user_id):
+    def insert(self, thread_id, title, content, user, user_id, file_path):
         cursor = self.connection.cursor()
         cursor.execute('''INSERT INTO posts 
-                          (thread_id, title, content, user, user_id) 
-                          VALUES (?,?,?,?,?)''', (thread_id, title, content, user, str(user_id)))
+                          (thread_id, title, content, user, user_id, file_path) 
+                          VALUES (?,?,?,?,?,?)''', (thread_id, title, content, user, str(user_id), file_path))
         cursor.close()
         self.connection.commit()
         
@@ -38,9 +39,9 @@ class PostModel:
         rows = cursor.fetchall()
         return rows
     
-    def delete(self, thread_id, posts_id):
+    def delete(self, thread_id, posts_id, user_id):
         cursor = self.connection.cursor()
-        cursor.execute('''DELETE FROM posts WHERE id = ? AND thread_id = ?''', (str(posts_id), thread_id),)
+        cursor.execute('''DELETE FROM posts WHERE id = ? AND thread_id = ? AND user_id = ?''', (str(posts_id), thread_id, user_id),)
         cursor.close()
         self.connection.commit()    
         

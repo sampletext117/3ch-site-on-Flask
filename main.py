@@ -5,6 +5,8 @@ from reg_form import RegisterForm
 from db import DB
 from user_model import UserModel
 from posts_model import PostModel
+from flask import request
+import os
 
 
 app = Flask(__name__)
@@ -53,61 +55,89 @@ def add_post(thread):
         return redirect('/login')
 
     form = AddPostForm()
+    if request.method == 'POST':
+        print(request.files)
+        filename = request.files['file'].name
+        print(request.files['file'].name)
+        print(request.form)
+        f = request.files['file']
+        file_extension = request.files['file'].content_type.split("/")
+        full_name = filename + "." + file_extension[1]
+        with open("static/" + full_name, mode="wb") as file:
+            a = f.read()
+            file.write(a)
+        print(os.path.join("static", full_name))
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
         u_name = session['username']
         pm = PostModel(db1.get_connection())
-        pm.insert(thread, title, content, u_name, session['user_id'])
+        pm.insert(thread, title, content, u_name, session['user_id'], 's')
         return redirect("/" + thread)
     return render_template('add_post.html', title='Создание поста', form=form, username=session['username'])
 
 
 @app.route('/delete_post/<thread>/<int:post_id>', methods=['GET'])
 def delete_post(thread, post_id):
-    print(thread)
     if 'username' not in session:
         return redirect('/login')
     pm = PostModel(db1.get_connection())
-    pm.delete(thread, post_id)
+    pm.delete(thread, post_id, session['user_id'])
     return redirect("/thread1")
 
 
 @app.route('/thread1', methods=['GET', 'POST'])
 def thread1():
     posts = PostModel(db1.get_connection()).get_all('thread1')
-    return render_template('thread1.html', username=session['username'], posts=posts)
+    try:
+        return render_template('thread1.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread1.html', posts=posts)
 
 
 @app.route('/thread2', methods=['GET', 'POST'])
 def thread2():
     posts = PostModel(db1.get_connection()).get_all('thread2')
-    return render_template('thread2.html', username=session['username'], posts=posts)
+    try:
+        return render_template('thread2.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread2.html', posts=posts)
 
 
 @app.route('/thread3', methods=['GET', 'POST'])
 def thread3():
     posts = PostModel(db1.get_connection()).get_all('thread3')
-    return render_template('thread3.html', username=session['username'], posts=posts)
+    try:
+        return render_template('thread3.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread3.html', posts=posts)
 
 
 @app.route('/thread4', methods=['GET', 'POST'])
 def thread4():
     posts = PostModel(db1.get_connection()).get_all('thread4')
-    return render_template('thread4.html', username=session['username'], posts=posts)
+    try:
+        return render_template('thread4.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread4.html', posts=posts)
 
 
 @app.route('/thread5', methods=['GET', 'POST'])
 def thread5():
     posts = PostModel(db1.get_connection()).get_all('thread5')
-    return render_template('thread5.html', username=session['username'], posts=posts)
+    try:
+        return render_template('thread5.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread5.html', posts=posts)
 
 
 @app.route('/thread6', methods=['GET', 'POST'])
 def thread6():
     posts = PostModel(db1.get_connection()).get_all('thread6')
-    return render_template('thread6.html', username=session['username'], posts=posts)
-
+    try:
+        return render_template('thread6.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread6.html', posts=posts)
 
 @app.route('/error', methods=['GET', 'POST'])
 def error():
@@ -116,9 +146,9 @@ def error():
 
 @app.route('/logout')
 def logout():
-    session.pop('username',0)
-    session.pop('user_id',0)
-    return redirect('/login')
+    session.pop('username', 0)
+    session.pop('user_id', 0)
+    return redirect('/start_page')
 
 
 if __name__ == '__main__':

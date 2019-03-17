@@ -18,7 +18,7 @@
       <nav class="navbar navbar-light bg-light">
         <a class="navbar-brand" href="/start_page">3ch</a>
         {% if "username" in session %}
-            <a class="navbar-brand" href="/logout">{{session['username']}}</a>
+            <a class="navbar-brand" href="/logout">Пользователь: {{session['username']}}</a>
         {% endif %}
       </nav>
     </header>
