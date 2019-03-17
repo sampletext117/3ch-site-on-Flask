@@ -84,23 +84,26 @@ def add_post(thread):
 
     form = AddPostForm()
     if request.method == 'POST':
-        filename = request.files['file'].filename
-        f = request.files['file']
-        file_extension = request.files['file'].content_type.split("/")
-        full_name = filename + "." + file_extension[1]
-        with open("static/" + full_name, mode="wb") as file:
-            a = f.read()
-            file.write(a)
-
-        file_path = os.path.join("static", full_name)
-        splited_fp = file_path.split(".")
         try:
-            small_fp = splited_fp[0] + "_small." + splited_fp[1]
-            scale_image(input_image_path=file_path,
+            filename = request.files['file'].filename
+            f = request.files['file']
+            # file_extension = request.files['file'].content_type.split("/")
+            # full_name = filename + "." + file_extension[1]
+            with open("static/" + filename, mode="wb") as file:
+                a = f.read()
+                file.write(a)
+
+            file_path = os.path.join("static", filename)
+            splited_fp = file_path.split(".")
+            try:
+                small_fp = splited_fp[0] + "_small." + splited_fp[1]
+                scale_image(input_image_path=file_path,
                     output_image_path=small_fp,
                     width=500)
+            except:
+                small_fp = file_path
         except:
-            small_fp = file_path
+            small_fp = "1pixel.png"
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
@@ -172,6 +175,14 @@ def thread6():
         return render_template('thread6.html', username=session['username'], posts=posts)
     except:
         return render_template('thread6.html', posts=posts)
+
+@app.route('/thread7', methods=['GET', 'POST'])
+def thread7():
+    posts = PostModel(db1.get_connection()).get_all('thread7')
+    try:
+        return render_template('thread7.html', username=session['username'], posts=posts)
+    except:
+        return render_template('thread7.html', posts=posts)
 
 @app.route('/error', methods=['GET', 'POST'])
 def error():

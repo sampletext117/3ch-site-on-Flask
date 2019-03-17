@@ -1,7 +1,6 @@
 from db import DB
 from user_model import UserModel
 from posts_model import PostModel
-import random
 
 
 db_posts = DB('posts.db')
