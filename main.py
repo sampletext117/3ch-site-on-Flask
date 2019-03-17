@@ -6,6 +6,7 @@ from db import DB
 from user_model import UserModel
 from posts_model import PostModel
 from flask import request
+from PIL import Image
 import os
 
 
@@ -49,6 +50,33 @@ def register():
     return render_template('register.html', title= 'Регистрация', form=form)
 
 
+def scale_image(input_image_path,
+                output_image_path,
+                width=None,
+                height=None
+                ):
+    original_image = Image.open(input_image_path)
+    w, h = original_image.size
+
+    if width and height:
+        max_size = (width, height)
+    elif width:
+        max_size = (width, h)
+    elif height:
+        max_size = (w, height)
+    else:
+        # No width or height specified
+        raise RuntimeError('Width or height required!')
+
+    original_image.thumbnail(max_size, Image.ANTIALIAS)
+    original_image.save(output_image_path)
+
+    scaled_image = Image.open(output_image_path)
+    width, height = scaled_image.size
+
+
+
+
 @app.route('/add_post/<thread>', methods=['GET', 'POST'])
 def add_post(thread):
     if 'username' not in session:
@@ -56,23 +84,29 @@ def add_post(thread):
 
     form = AddPostForm()
     if request.method == 'POST':
-        print(request.files)
-        filename = request.files['file'].name
-        print(request.files['file'].name)
-        print(request.form)
+        filename = request.files['file'].filename
         f = request.files['file']
         file_extension = request.files['file'].content_type.split("/")
         full_name = filename + "." + file_extension[1]
         with open("static/" + full_name, mode="wb") as file:
             a = f.read()
             file.write(a)
-        print(os.path.join("static", full_name))
+
+        file_path = os.path.join("static", full_name)
+        splited_fp = file_path.split(".")
+        try:
+            small_fp = splited_fp[0] + "_small." + splited_fp[1]
+            scale_image(input_image_path=file_path,
+                    output_image_path=small_fp,
+                    width=500)
+        except:
+            small_fp = file_path
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
         u_name = session['username']
         pm = PostModel(db1.get_connection())
-        pm.insert(thread, title, content, u_name, session['user_id'], 's')
+        pm.insert(thread, title, content, u_name, session['user_id'], small_fp)
         return redirect("/" + thread)
     return render_template('add_post.html', title='Создание поста', form=form, username=session['username'])
 
@@ -83,7 +117,7 @@ def delete_post(thread, post_id):
         return redirect('/login')
     pm = PostModel(db1.get_connection())
     pm.delete(thread, post_id, session['user_id'])
-    return redirect("/thread1")
+    return redirect("/" + thread)
 
 
 @app.route('/thread1', methods=['GET', 'POST'])

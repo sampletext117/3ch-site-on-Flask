@@ -19,6 +19,8 @@
         <a class="navbar-brand" href="/start_page">3ch</a>
         {% if "username" in session %}
             <a class="navbar-brand" href="/logout">Пользователь: {{session['username']}}</a>
+		{% else %}
+			<a class="navbar-brand" href="/login">Войти</a>
         {% endif %}
       </nav>
     </header>
