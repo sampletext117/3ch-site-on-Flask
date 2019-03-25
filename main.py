@@ -8,6 +8,7 @@ from posts_model import PostModel
 from flask import request
 from PIL import Image
 import os
+import random
 
 
 app = Flask(__name__)
@@ -15,6 +16,7 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 db1 = DB('posts.db')
 db2 = DB('users.db')
+
 
 def exits(args):
     pass
@@ -37,6 +39,14 @@ def login():
 
 @app.route('/start_page', methods=['GET', 'POST'])
 def start_page():
+    all_photos = os.listdir("static")
+    list_of_random_items = random.sample(all_photos, 3)
+    # return render_template(
+    #     'start_page.html',
+    #     title='Три.ч - Свободное общение.',
+    #     img1=list_of_random_items[0],
+    #     img2=list_of_random_items[1],
+    #     img3=list_of_random_items[2])
     return render_template('start_page.html', title='Три.ч - Свободное общение.')
 
 
@@ -47,7 +57,7 @@ def register():
         user_model = UserModel(db2.get_connection())
         user_model.insert(form.username.data, form.password.data)
         return redirect("/login")
-    return render_template('register.html', title= 'Регистрация', form=form)
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 def scale_image(input_image_path,
@@ -65,7 +75,6 @@ def scale_image(input_image_path,
     elif height:
         max_size = (w, height)
     else:
-        # No width or height specified
         raise RuntimeError('Width or height required!')
 
     original_image.thumbnail(max_size, Image.ANTIALIAS)
@@ -73,8 +82,6 @@ def scale_image(input_image_path,
 
     scaled_image = Image.open(output_image_path)
     width, height = scaled_image.size
-
-
 
 
 @app.route('/add_post/<thread>', methods=['GET', 'POST'])
@@ -87,8 +94,6 @@ def add_post(thread):
         try:
             filename = request.files['file'].filename
             f = request.files['file']
-            # file_extension = request.files['file'].content_type.split("/")
-            # full_name = filename + "." + file_extension[1]
             with open("static/" + filename, mode="wb") as file:
                 a = f.read()
                 file.write(a)
@@ -98,11 +103,11 @@ def add_post(thread):
             try:
                 small_fp = splited_fp[0] + "_small." + splited_fp[1]
                 scale_image(input_image_path=file_path,
-                    output_image_path=small_fp,
-                    width=500)
-            except:
+                            output_image_path=small_fp,
+                            width=500)
+            except BaseException:
                 small_fp = file_path
-        except:
+        except BaseException:
             small_fp = "1pixel.png"
     if form.validate_on_submit():
         title = form.title.data
@@ -111,7 +116,11 @@ def add_post(thread):
         pm = PostModel(db1.get_connection())
         pm.insert(thread, title, content, u_name, session['user_id'], small_fp)
         return redirect("/" + thread)
-    return render_template('add_post.html', title='Создание поста', form=form, username=session['username'])
+    return render_template(
+        'add_post.html',
+        title='Создание поста',
+        form=form,
+        username=session['username'])
 
 
 @app.route('/delete_post/<thread>/<int:post_id>', methods=['GET'])
@@ -119,6 +128,8 @@ def delete_post(thread, post_id):
     if 'username' not in session:
         return redirect('/login')
     pm = PostModel(db1.get_connection())
+    if session['username'] == 'admin':
+        pm.delete_all(thread, post_id)
     pm.delete(thread, post_id, session['user_id'])
     return redirect("/" + thread)
 
@@ -127,8 +138,11 @@ def delete_post(thread, post_id):
 def thread1():
     posts = PostModel(db1.get_connection()).get_all('thread1')
     try:
-        return render_template('thread1.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread1.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread1.html', posts=posts)
 
 
@@ -136,8 +150,11 @@ def thread1():
 def thread2():
     posts = PostModel(db1.get_connection()).get_all('thread2')
     try:
-        return render_template('thread2.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread2.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread2.html', posts=posts)
 
 
@@ -145,8 +162,11 @@ def thread2():
 def thread3():
     posts = PostModel(db1.get_connection()).get_all('thread3')
     try:
-        return render_template('thread3.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread3.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread3.html', posts=posts)
 
 
@@ -154,8 +174,11 @@ def thread3():
 def thread4():
     posts = PostModel(db1.get_connection()).get_all('thread4')
     try:
-        return render_template('thread4.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread4.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread4.html', posts=posts)
 
 
@@ -163,8 +186,11 @@ def thread4():
 def thread5():
     posts = PostModel(db1.get_connection()).get_all('thread5')
     try:
-        return render_template('thread5.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread5.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread5.html', posts=posts)
 
 
@@ -172,17 +198,25 @@ def thread5():
 def thread6():
     posts = PostModel(db1.get_connection()).get_all('thread6')
     try:
-        return render_template('thread6.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread6.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread6.html', posts=posts)
+
 
 @app.route('/thread7', methods=['GET', 'POST'])
 def thread7():
     posts = PostModel(db1.get_connection()).get_all('thread7')
     try:
-        return render_template('thread7.html', username=session['username'], posts=posts)
-    except:
+        return render_template(
+            'thread7.html',
+            username=session['username'],
+            posts=posts)
+    except BaseException:
         return render_template('thread7.html', posts=posts)
+
 
 @app.route('/error', methods=['GET', 'POST'])
 def error():
