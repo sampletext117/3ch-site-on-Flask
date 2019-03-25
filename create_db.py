@@ -10,4 +10,3 @@ users_model.init_table()
 users_model.insert("test1", "111")
 post_model = PostModel(db_posts.get_connection())
 post_model.init_table()
-
