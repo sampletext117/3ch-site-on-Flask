@@ -39,8 +39,8 @@ def login():
 
 @app.route('/start_page', methods=['GET', 'POST'])
 def start_page():
-    all_photos = os.listdir("static")
-    list_of_random_items = random.sample(all_photos, 3)
+    # all_photos = os.listdir("static")
+    # list_of_random_items = random.sample(all_photos, 3)
     # return render_template(
     #     'start_page.html',
     #     title='Три.ч - Свободное общение.',
