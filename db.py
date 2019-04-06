@@ -2,8 +2,8 @@ import sqlite3
 
 
 class DB:
-    def __init__(self, db_name):
-        conn = sqlite3.connect(db_name, check_same_thread=False)
+    def __init__(self):
+        conn = sqlite3.connect("posts_and_users.db", check_same_thread=False)
         self.conn = conn
 
     def get_connection(self):
