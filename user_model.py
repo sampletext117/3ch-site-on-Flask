@@ -7,7 +7,7 @@ class UserModel:
         cursor.execute('''CREATE TABLE IF NOT EXISTS users
                             (id INTEGER PRIMARY KEY AUTOINCREMENT,
                              user_name VARCHAR(50),
-                             user_number VARCHAR(8)
+                             password_hash VARCHAR(10)
                              )''')
         cursor.close()
         self.connection.commit()
