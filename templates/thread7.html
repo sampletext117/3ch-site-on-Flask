@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1><font size="6" face="Times New Roman">Гейминг</font></h1>
+	<a href="/add_post/thread7">Написать пост</a>
+    {% for item in posts %}
+        <div class="alert alert-dark" role="alert">
+            <h2>{{item[1]}}; от пользователя {{ item[3] }}</h2>
+            <div>{{item[2]}}<br>
+			<img src={{item[6]}} alt=></div>
+             <a href="/delete_post/thread7/{{item[0]}}">Удалить пост</a>
+        </div>
+    {% endfor %}
+{% endblock %}
